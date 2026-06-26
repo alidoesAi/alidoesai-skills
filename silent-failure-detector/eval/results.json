@@ -1,0 +1,40 @@
+{
+  "claim": "the detector flags a silently-stopped stream and passes a healthy one",
+  "criterion": "binary: status=='silent' must equal ground-truth label=='stopped'",
+  "grader": "deterministic exact-match vs labels (no LLM judge)",
+  "n": 105,
+  "positives_stopped": 55,
+  "negatives_alive": 50,
+  "confusion": {
+    "tp": 45,
+    "fp": 7,
+    "tn": 43,
+    "fn": 10
+  },
+  "tpr_recall": 0.8182,
+  "tpr_ci95": [
+    0.6967,
+    0.8981
+  ],
+  "tnr_specificity": 0.86,
+  "tnr_ci95": [
+    0.7381,
+    0.9305
+  ],
+  "accuracy": 0.8381,
+  "accuracy_ci95": [
+    0.7559,
+    0.8964
+  ],
+  "config": {
+    "multiplier": 3.0,
+    "seed": 20260625,
+    "python": "3.10.12"
+  },
+  "failure_taxonomy": {
+    "false_positive_grey_zone": 7,
+    "false_positive_clear": 0,
+    "false_negative_grey_zone": 10,
+    "false_negative_clear": 0
+  }
+}
