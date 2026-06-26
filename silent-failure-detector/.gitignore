@@ -1,4 +1,8 @@
 __pycache__/
 *.pyc
-# eval/results.json, eval/transcripts.jsonl, eval/gold.jsonl are kept as the
-# committed receipt evidence (regenerable from seed via the re-run command).
+# Regenerable eval artifacts — the deterministic harness is the source of truth
+# (python3 eval/make_goldset.py && python3 eval/run_eval.py, seed 20260625).
+# results.json (the headline receipt) is committed; the large per-case data is not —
+# re-run the harness to regenerate these locally, identical every time:
+eval/gold.jsonl
+eval/transcripts.jsonl
