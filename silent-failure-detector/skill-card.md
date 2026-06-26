@@ -9,6 +9,7 @@ Machine-readable identity + governance, aligned to the emerging verified-skill b
 | **version** | 0.1.0 |
 | **owner** | Afsar Ali — alidoes.ai |
 | **license** | Apache-2.0 |
+| **published_url** | https://github.com/alidoesAi/alidoesai-skills/tree/main/silent-failure-detector |
 | **risk_tier** | **L0** (read-only, no egress, no credentials) |
 | **external APIs called** | none |
 | **dependencies** | Python ≥3.8 standard library only (no third-party packages) |
@@ -16,7 +17,7 @@ Machine-readable identity + governance, aligned to the emerging verified-skill b
 | **memory access** | none — does not read or write `MEMORY.md` / `SOUL.md` / `AGENTS.md` |
 | **determinism** | full — output depends only on the timestamps passed in |
 | **benchmark** | `BENCHMARK.md` (reproducible eval; accuracy 83.8%, all errors in the threshold grey zone) |
-| **scan posture** | no `curl\|bash`, no runtime fetch, no obfuscated/base64 commands, no secret access — passes a behavior scan by construction; declared behavior == actual behavior |
+| **scan posture** | no `curl\\|bash`, no runtime fetch, no obfuscated/base64 commands, no secret access — passes a behavior scan by construction; declared behavior == actual behavior |
 | **known limitations** | grey-zone (2–4× threshold) false alarms + one-window detection latency; only as good as the configured `expected_interval_sec` |
 
 **Declared == actual:** this skill reads a JSON file of timestamps and prints a verdict. That is the whole of its behavior. There is no network call, no shell-out, no write outside its eval folder, and no access to credentials or agent memory.
