@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# eval/results.json, eval/transcripts.jsonl, eval/gold.jsonl are kept as the
+# committed receipt evidence (regenerable from seed via the re-run command).
