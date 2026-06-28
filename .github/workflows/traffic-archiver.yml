@@ -1,7 +1,12 @@
 # traffic-archiver — defeats GitHub's 14-day traffic-history wipe (W4 of the measurement-learning plan).
 # Lives at .github/workflows/traffic-archiver.yml so the Action runs on its schedule.
-# It appends a clones/views snapshot to .metrics/traffic-history.jsonl every 3 days (well inside the
-# 14-day window). Uses the repo's built-in GITHUB_TOKEN (which has traffic-read on its own repo). No secrets.
+# Appends a clones/views snapshot to .metrics/traffic-history.jsonl every 3 days (well inside the 14-day window).
+#
+# TOKEN: the GitHub traffic API returns 403 "Resource not accessible by integration" under the default
+# GITHUB_TOKEN, so this needs a PAT in the repo secret TRAFFIC_TOKEN — one of:
+#   - fine-grained PAT scoped to THIS repo, Repository permissions -> Administration: Read-only; OR
+#   - classic PAT with `repo` (or `public_repo`) scope.
+# The git push still uses the workflow's built-in GITHUB_TOKEN (contents: write), not the PAT.
 name: traffic-archiver
 on:
   schedule:
@@ -14,21 +19,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch + append traffic snapshot
+      - name: Fetch + append traffic snapshot (always valid JSON; fail loud)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
           ts=$(date -u +%FT%TZ)
-          clones=$(gh api "repos/$REPO/traffic/clones" 2>/dev/null || echo '{}')
-          views=$(gh api  "repos/$REPO/traffic/views"  2>/dev/null || echo '{}')
+          fetch () {   # $1=endpoint $2=outfile -> writes valid JSON, returns 0 ok / 1 error
+            if [ -z "${GH_TOKEN:-}" ]; then
+              jq -cn '{error:"TRAFFIC_TOKEN secret not set"}' > "$2"; return 1
+            fi
+            if gh api "repos/$REPO/traffic/$1" > "$2" 2>/tmp/e; then
+              return 0
+            else
+              jq -cn --arg e "$(tr -d '\r\n' </tmp/e | head -c 300)" '{error:$e}' > "$2"; return 1
+            fi
+          }
+          err=0
+          fetch clones /tmp/clones.json || err=1
+          fetch views  /tmp/views.json  || err=1
           mkdir -p .metrics
-          printf '{"ts":"%s","clones":%s,"views":%s}\n' "$ts" "$clones" "$views" >> .metrics/traffic-history.jsonl
+          # assemble with jq so every appended line is ALWAYS valid JSON (fixes the corrupt-stub bug)
+          jq -cn --arg ts "$ts" --slurpfile c /tmp/clones.json --slurpfile v /tmp/views.json \
+             '{ts:$ts, clones:$c[0], views:$v[0]}' >> .metrics/traffic-history.jsonl
           git config user.name  "traffic-archiver"
           git config user.email "actions@users.noreply.github.com"
           git add .metrics/traffic-history.jsonl
-          git commit -m "metrics: traffic snapshot $ts" || { echo "no change"; exit 0; }
-          git push
-# Note: the daily clones/views windows overlap between runs — de-dupe by date at analysis time if you want
-# exact daily series. The point is presence-over-time of UNIQUE cloners + external issues, not raw totals.
+          git commit -m "metrics: traffic snapshot $ts" || echo "no change"
+          git push || true
+          if [ "$err" -ne 0 ]; then
+            echo "::error::traffic fetch failed (TRAFFIC_TOKEN missing or lacking Administration:Read) — see the {\"error\":...} record"
+            exit 1
+          fi
+# Note: daily clones/views windows overlap between runs — de-dupe by date at analysis time for an exact
+# daily series. The point is presence-over-time of UNIQUE cloners + external issues, not raw totals.
