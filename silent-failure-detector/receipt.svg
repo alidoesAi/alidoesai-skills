@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 390" role="img" font-family="Inter, system-ui, sans-serif" aria-label="Eval receipt for silent-failure-detector, n=105 labeled cases, deterministic grader. Confusion matrix: actually stopped and flagged silent = 45 caught; actually stopped but passed healthy = 10 missed; actually alive but flagged silent = 7 false alarms; actually alive and passed healthy = 43 correct. Accuracy 83.8% (95% CI 75.6 to 89.6), recall 81.8%, specificity 86.0%. All 17 errors sit in the 2 to 4 times threshold grey zone; clear and empty streams are 100% correct.">
   <rect width="720" height="390" rx="14" fill="#FBFAF7"/>
-  <text x="30" y="42" font-size="17" font-weight="700" fill="#1C1B19">silent-failure-detector &mdash; eval receipt</text>
+  <text x="30" y="42" font-size="17" font-weight="700" fill="#1C1B19">silent-failure-detector — eval receipt</text>
   <text x="30" y="64" font-size="12" fill="#6B7280">n = 105 labeled cases · deterministic grader (no LLM judge) · reproducible</text>
 
   <!-- confusion matrix -->
@@ -34,7 +34,7 @@
   <text x="448" y="224" font-size="13" font-weight="600" fill="#1C1B19">81.8% recall</text>
   <text x="448" y="240" font-size="10.5" fill="#6B7280">catches real silent failures</text>
   <text x="448" y="266" font-size="13" font-weight="600" fill="#1C1B19">86.0% specificity</text>
-  <text x="448" y="282" font-size="10.5" fill="#6B7280">doesn&rsquo;t cry wolf</text>
+  <text x="448" y="282" font-size="10.5" fill="#6B7280">doesn’t cry wolf</text>
 
   <line x1="30" y1="312" x2="690" y2="312" stroke="#E8E4DC" stroke-width="1"/>
   <text x="30" y="338" font-size="12.5" fill="#1C1B19">All 17 errors sit in the 2–4× threshold grey zone — clear &amp; empty streams: 100% correct.</text>
