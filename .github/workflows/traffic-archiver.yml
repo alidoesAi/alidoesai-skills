@@ -1,6 +1,6 @@
 # traffic-archiver — defeats GitHub's 14-day traffic-history wipe (W4 of the measurement-learning plan).
 # Lives at .github/workflows/traffic-archiver.yml so the Action runs on its schedule.
-# Appends a clones/views snapshot to .metrics/traffic-history.jsonl every 3 days (well inside the 14-day window).
+# Appends a clones/views/referrers/paths snapshot to .metrics/traffic-history.jsonl every 3 days (well inside the 14-day window).
 #
 # TOKEN: the GitHub traffic API returns 403 "Resource not accessible by integration" under the default
 # GITHUB_TOKEN, so this needs a PAT in the repo secret TRAFFIC_TOKEN — one of:
@@ -37,12 +37,17 @@ jobs:
             fi
           }
           err=0
-          fetch clones /tmp/clones.json || err=1
-          fetch views  /tmp/views.json  || err=1
+          fetch clones            /tmp/clones.json    || err=1
+          fetch views             /tmp/views.json     || err=1
+          fetch popular/referrers /tmp/referrers.json || err=1
+          fetch popular/paths     /tmp/paths.json     || err=1
           mkdir -p .metrics
-          # assemble with jq so every appended line is ALWAYS valid JSON (fixes the corrupt-stub bug)
-          jq -cn --arg ts "$ts" --slurpfile c /tmp/clones.json --slurpfile v /tmp/views.json \
-             '{ts:$ts, clones:$c[0], views:$v[0]}' >> .metrics/traffic-history.jsonl
+          # assemble with jq so every appended line is ALWAYS valid JSON (fixes the corrupt-stub bug).
+          # referrers/paths are arrays on success, {error:...} on failure — both valid JSON.
+          jq -cn --arg ts "$ts" \
+             --slurpfile c /tmp/clones.json --slurpfile v /tmp/views.json \
+             --slurpfile r /tmp/referrers.json --slurpfile p /tmp/paths.json \
+             '{ts:$ts, clones:$c[0], views:$v[0], referrers:$r[0], paths:$p[0]}' >> .metrics/traffic-history.jsonl
           git config user.name  "traffic-archiver"
           git config user.email "actions@users.noreply.github.com"
           git add .metrics/traffic-history.jsonl
