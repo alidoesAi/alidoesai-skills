@@ -1,0 +1,6 @@
+# Privacy firewall: never commit memory bodies from a PUBLIC repo. Track only the receipt
+# (this rule + README). To publish a specific, reviewed memory, force-add it deliberately:
+#   git add -f .claude/auto-memory/<curated-file>.md
+*
+!.gitignore
+!README.md
