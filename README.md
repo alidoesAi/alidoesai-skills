@@ -11,6 +11,6 @@ Verified [Agent Skills](https://agentskills.io) — each one shipped **with the 
 | [silent-failure-detector](./silent-failure-detector/) | Flags when a heartbeat/log stream goes **silent** — the failure that doesn't error | [BENCHMARK.md](./silent-failure-detector/BENCHMARK.md) · 83.8% accuracy, every error at the threshold boundary, deterministic grader |
 
 ## What "verified" means here
-Every skill ships: `SKILL.md` (the skill) · `skill-card.md` (identity + declared permissions + risk tier) · `SECURITY.md` (threat model + what it does *not* do) · `BENCHMARK.md` (a **reproducible** eval — re-run it yourself) · a visual receipt. Aligned to the emerging verified-skill bar (NVIDIA / OWASP). License: Apache-2.0.
+Every skill ships: `SKILL.md` (the skill) · `skill-card.md` (identity + declared permissions + risk tier) · `SECURITY.md` (threat model + what it does *not* do) · `BENCHMARK.md` (a **reproducible** eval — re-run it yourself) · a visual receipt. Aligned to the emerging verified-skill bar (NVIDIA / OWASP). License: not yet specified.
 
 More at **[alidoes.ai/proof](https://alidoes.ai/proof/)**.
